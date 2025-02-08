@@ -1,41 +1,41 @@
 from fastapi import APIRouter, HTTPException, Depends
-from .schemas import TaskModel, ItemMain, ItemCreate, ItemUpdate
-from .models import Item
+from .schemas import TaskModel, ClientMain, ClientCreate, ClientUpdate
+from .models import Client
 from .dependencies import get_db
 from sqlalchemy.orm import Session
 from typing import List
 
-router = APIRouter(prefix='/tasks')
+router = APIRouter(prefix='/users')
 
-@router.get('/all_tasks', response_model=List[ItemMain], summary='Получить список задач')
+@router.get('/all_users', response_model=List[ClientMain], summary='Получить список клиентов')
 def get_tasks(db: Session = Depends(get_db)):
-    return db.query(Item).all()
+    return db.query(Client).all()
 
-@router.post('/add_task', response_model=ItemMain, summary='Добавить задачу')
-def add_tasks(task: ItemCreate, db: Session = Depends(get_db)):
-    db_item = Item(**task.dict())
-    db.add(db_item)
+@router.post('/add_users', response_model=ClientMain, summary='Добавить клиента')
+def add_tasks(task: ClientCreate, db: Session = Depends(get_db)):
+    db_client = Client(**task.dict())
+    db.add(db_client)
     db.commit()
-    db.refresh(db_item)
-    return db_item
+    db.refresh(db_client)
+    return db_client
 
-@router.put('/tasks/{id}', response_model=ItemMain, summary='Обновить задачу по id')
-def update_task(id: int, item_update: ItemUpdate, db: Session = Depends(get_db)):
-    db_item = db.query(Item).filter(Item.id == id).first()
-    if db_item is None:
+@router.put('/users/{id}', response_model=ClientMain, summary='Изменить информацию о клиенте по id')
+def update_task(id: int, item_update: ClientUpdate, db: Session = Depends(get_db)):
+    db_client = db.query(Client).filter(Client.id == id).first()
+    if db_client is None:
         raise HTTPException(status_code=404, detail="Item not found")
     for field, value in item_update.model_dump(exclude_unset=True).items():
-        setattr(db_item, field, value)
-    db.add(db_item)
+        setattr(db_client, field, value)
+    db.add(db_client)
     db.commit()
-    db.refresh(db_item)
-    return db_item
+    db.refresh(db_client)
+    return db_client
 
-@router.delete('/tasks/{id}', summary='Удалить задачу')
+@router.delete('/users/{id}', summary='Удалить клиента')
 def delete_task(id: int, db: Session = Depends(get_db)):
-    db_item = db.query(Item).filter(Item.id == id).first()
-    if db_item is None:
-        raise HTTPException(status_code=404, detail="Item not found")
-    db.delete(db_item)
+    db_client = db.query(Client).filter(Client.id == id).first()
+    if db_client is None:
+        raise HTTPException(status_code=404, detail="Client not found")
+    db.delete(db_client)
     db.commit()
-    return {"message": "Item deleted successfully"}
+    return {"message": "Client deleted successfully"}

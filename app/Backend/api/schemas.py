@@ -1,19 +1,18 @@
-from pydantic import BaseModel, Field, PydanticUserError
+from pydantic import BaseModel, Field, PydanticUserError, EmailStr
 from typing import Optional
 
 class TaskModel(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
-    status: Optional[bool] = None
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
 
-class ItemCreate(TaskModel):
+class ClientCreate(TaskModel):
     pass
 
-class ItemUpdate(TaskModel):
+class ClientUpdate(TaskModel):
     pass
 
 
-class ItemMain(TaskModel):
+class ClientMain(TaskModel):
     id: int
 
     class Config:
