@@ -1,7 +1,0 @@
-python-dotenv
-fastapi[all]
-pydantic
-sqlalchemy
-uvicorn
-psycopg2
-
