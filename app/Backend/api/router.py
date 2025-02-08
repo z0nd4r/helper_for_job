@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from .schemas import TaskModel, Item_main, ItemCreate, ItemUpdate
+from .schemas import TaskModel, ItemMain, ItemCreate, ItemUpdate
 from .models import Item
 from .dependencies import get_db
 from sqlalchemy.orm import Session
@@ -7,11 +7,11 @@ from typing import List
 
 router = APIRouter(prefix='/tasks')
 
-@router.get('/all_tasks', response_model=List[Item_main], summary='Получить список задач')
+@router.get('/all_tasks', response_model=List[ItemMain], summary='Получить список задач')
 def get_tasks(db: Session = Depends(get_db)):
     return db.query(Item).all()
 
-@router.post('/add_task', response_model=Item_main, summary='Добавить задачу')
+@router.post('/add_task', response_model=ItemMain, summary='Добавить задачу')
 def add_tasks(task: ItemCreate, db: Session = Depends(get_db)):
     db_item = Item(**task.dict())
     db.add(db_item)
@@ -19,7 +19,7 @@ def add_tasks(task: ItemCreate, db: Session = Depends(get_db)):
     db.refresh(db_item)
     return db_item
 
-@router.put('/tasks/{id}', response_model=Item_main, summary='Обновить задачу по id')
+@router.put('/tasks/{id}', response_model=ItemMain, summary='Обновить задачу по id')
 def update_task(id: int, item_update: ItemUpdate, db: Session = Depends(get_db)):
     db_item = db.query(Item).filter(Item.id == id).first()
     if db_item is None:

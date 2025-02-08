@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field, PydanticUserError
-from uuid import UUID
 from typing import Optional
 
 class TaskModel(BaseModel):
@@ -14,7 +13,7 @@ class ItemUpdate(TaskModel):
     pass
 
 
-class Item_main(TaskModel):
+class ItemMain(TaskModel):
     id: int
 
     class Config:
