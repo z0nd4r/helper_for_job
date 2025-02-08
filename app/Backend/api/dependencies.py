@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.Backend.api.database import SessionLocal
+from .database import SessionLocal
 
 def get_db(): #создать сессию базы данных и закрыть ее после завершения запроса
     db = SessionLocal()
