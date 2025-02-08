@@ -2,11 +2,10 @@ from sqlalchemy import Boolean, Column, Integer, String
 from .database import Base
 
 
-class Item(Base):
-    __tablename__ = "tasks"
+class Client(Base):
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=True)
-    description = Column(String, nullable=True)
-    status = Column(Boolean, default=True)
+    name = Column(String, nullable=True)
+    email = Column(String, nullable=True)
 
