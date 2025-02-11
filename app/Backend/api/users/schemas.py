@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, PydanticUserError, EmailStr
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 class TaskModel(BaseModel):
@@ -10,7 +10,6 @@ class ClientCreate(TaskModel):
 
 class ClientUpdate(TaskModel):
     pass
-
 
 class ClientMain(TaskModel):
     id: int
