@@ -1,12 +1,14 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 import uvicorn
-from app.Backend.api.database import engine, Base
-from app.Backend.api.router import router
+from app.Backend.datadase.database import engine, Base
+from app.Backend.api.routers.crud_users import router as crud_users
+from app.Backend.api.routers.auth_views import router as auth
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-app.include_router(router)
+app.include_router(crud_users)
+app.include_router(auth)
 
 # Определите домены, с которых разрешены запросы
 origins = [

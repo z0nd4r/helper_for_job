@@ -1,5 +1,5 @@
-from sqlalchemy import Boolean, Column, Integer, String
-from .database import Base
+from sqlalchemy import Column, Integer, String
+from ..datadase.database import Base
 
 
 class Client(Base):

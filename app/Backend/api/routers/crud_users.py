@@ -1,17 +1,17 @@
 from fastapi import APIRouter, HTTPException, Depends
-from .schemas import TaskModel, ClientMain, ClientCreate, ClientUpdate
-from .models import Client
-from .dependencies import get_db
+from ..schemas import ClientMain, ClientCreate, ClientUpdate
+from ..models import Client
+from ...datadase.dependencies import get_db
 from sqlalchemy.orm import Session
 from typing import List
 
-router = APIRouter(prefix='/users')
+router = APIRouter(prefix='/users', tags=['Users'])
 
-@router.get('/all_users', response_model=List[ClientMain], summary='Получить список клиентов')
+@router.get('/', response_model=List[ClientMain], summary='Получить список клиентов')
 def get_tasks(db: Session = Depends(get_db)):
     return db.query(Client).all()
 
-@router.post('/all_users/add_users', response_model=ClientMain, summary='Добавить клиента')
+@router.post('/add_users/', response_model=ClientMain, summary='Добавить клиента')
 def add_tasks(task: ClientCreate, db: Session = Depends(get_db)):
     db_client = Client(**task.dict())
     db.add(db_client)
@@ -19,7 +19,7 @@ def add_tasks(task: ClientCreate, db: Session = Depends(get_db)):
     db.refresh(db_client)
     return db_client
 
-@router.put('/all_users/{id}', response_model=ClientMain, summary='Изменить информацию о клиенте по id')
+@router.put('/{id}/', response_model=ClientMain, summary='Изменить информацию о клиенте по id')
 def update_task(id: int, item_update: ClientUpdate, db: Session = Depends(get_db)):
     db_client = db.query(Client).filter(Client.id == id).first()
     if db_client is None:
@@ -31,7 +31,7 @@ def update_task(id: int, item_update: ClientUpdate, db: Session = Depends(get_db
     db.refresh(db_client)
     return db_client
 
-@router.delete('/all_users/{id}', summary='Удалить клиента')
+@router.delete('/{id}/', summary='Удалить клиента')
 def delete_task(id: int, db: Session = Depends(get_db)):
     db_client = db.query(Client).filter(Client.id == id).first()
     if db_client is None:
