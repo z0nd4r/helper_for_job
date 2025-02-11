@@ -11,11 +11,6 @@ class ClientCreate(TaskModel):
 class ClientUpdate(TaskModel):
     pass
 
-class ClientReg(BaseModel):
-    email: Optional[EmailStr] = None
-    password: str
-
-
 class ClientMain(TaskModel):
     id: int
 
