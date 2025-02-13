@@ -1,22 +1,47 @@
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from app.Backend.datadase.db_helper import Database_Helper, db_helper
 from app.Backend.datadase.database import engine, Base
 from app.Backend.api.users.views import router as crud_users
 from app.Backend.api.auth.views import router as auth
 
-from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+
+import logging
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+async def create_tables():
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("Tables created successfully!")
+    except Exception as e:
+        logger.error(f"Error creating tables: {e}")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with db_helper.engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    yield
+    # Код, выполняемый при запуске приложения
+    logger.info("Starting up...")
+    try:
+        await create_tables()
+        logger.info("Database tables created (or already exist).")
+        yield  # Приложение запущено и готово принимать запросы
+    except Exception as e:
+        logger.error(f"Startup failed: {e}")
+        # В реальном приложении, возможно, следует выйти с ошибкой
+        # чтобы предотвратить запуск неисправного приложения
 
+    # Код, выполняемый при завершении приложения
+    finally:
+        logger.info("Shutting down...")
+        await engine.dispose() # Закрытие соединения с базой данных
+        logger.info("Database connection closed.")
 
 app = FastAPI(lifespan=lifespan)
 
@@ -39,7 +64,6 @@ app.add_middleware(
 )
 
 
-# Base.metadata.create_all(bind=engine)
 
 
 if __name__ == '__main__':
