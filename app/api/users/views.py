@@ -1,14 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends
 
-from .schemas import ClientMain, ClientCreate, ClientUpdate
-
-from app.Backend.datadase.models import Client
-from app.Backend.datadase.dependencies import get_db
+from app.datadase.models import Client
+from app.datadase.dependencies import get_db
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from typing import List
+
+from .schemas import ClientMain, ClientCreate, ClientUpdate
 
 
 router = APIRouter(prefix='/users', tags=['Users'])
@@ -19,6 +19,10 @@ async def get_tasks(db: AsyncSession  = Depends(get_db)):
     users = result.scalars().all()
     return users
 
+# @router.get('/', response_model=List[ClientMain], summary='Получить список клиентов')
+# async def get_tasks(db: AsyncSession  = Depends(get_db)):
+#     return crud.get_tasks()
+
 @router.post('/add_users/', response_model=ClientMain, summary='Добавить клиента')
 async def add_tasks(task: ClientCreate, db: AsyncSession = Depends(get_db)):
     db_client = Client(**task.model_dump())
@@ -26,6 +30,10 @@ async def add_tasks(task: ClientCreate, db: AsyncSession = Depends(get_db)):
     await db.commit()
     await db.refresh(db_client)
     return ClientMain.model_validate(db_client)
+
+# @router.post('/add_users/', response_model=ClientMain, summary='Добавить клиента')
+# async def add_users(user: ClientCreate, db: AsyncSession = Depends(get_db)):
+#     return crud.add_users(user=user)
 
 @router.put('/{id}/', response_model=ClientMain, summary='Изменить информацию о клиенте по id')
 async def update_task(id: int, item_update: ClientUpdate, db: AsyncSession  = Depends(get_db)):
