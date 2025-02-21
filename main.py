@@ -1,14 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
 
-from app.Backend.datadase.database import engine, Base
-from app.Backend.api.users.views import router as crud_users
-from app.Backend.api.auth.views import router as auth
+import uvicorn
 
 from contextlib import asynccontextmanager
 
 import logging
+
+from app.datadase.database import engine, Base
+# from app.api.users.views import router as crud_users
+from app.api.auth.views import router as auth
+from app.api.channels.views import router as crud_channels
 
 
 logging.basicConfig(level=logging.INFO)
@@ -45,20 +47,21 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(crud_users)
+# app.include_router(crud_users)
 app.include_router(auth)
+app.include_router(crud_channels)
 
-# Определите домены, с которых разрешены запросы
+# Домены, с которых разрешены запросы
 origins = [
-    # "http://localhost:3000",  # Например, для локальной разработки React
-    "https://qsoops.github.io", # Замените на домен вашего фронтенда
+    # "http://localhost:3000",  # Для локальной разработки React
+    "https://qsoops.github.io", # Домен фронтенда
     # "https://your-frontend-domain.com",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,  # Разрешить передачу куки (если требуется)
+    allow_credentials=True,  # Разрешить передачу куки 
     allow_methods=["*"],      # Разрешить все HTTP методы (GET, POST, PUT, DELETE, ...)
     allow_headers=["*"],      # Разрешить все заголовки
 )

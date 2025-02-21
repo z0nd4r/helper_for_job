@@ -1,33 +1,21 @@
 from fastapi import APIRouter, Depends
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
-from app.datadase.models import ClientAuth
 from app.datadase.dependencies import get_db
 
-from schemas import ClientReg, ClientMain
+from .schemas import UserReg, UserMain, UserLog
+
+from app.api.auth import crud
 
 router = APIRouter(prefix='/auth', tags = ['Auth'])
 
-security = HTTPBasic
+@router.post('/register', response_model=UserMain)
+async def user_register(user: UserReg, db: AsyncSession = Depends(get_db)):
+    return UserMain.model_validate(await crud.user_register(user, db))
 
-@router.get('/test')
-def test():
-    return {'message:': 'Test'}
 
-@router.post('/reg', response_model=ClientMain)
-async def reg(client: ClientReg, db: AsyncSession = Depends(get_db)):
-    db_client = ClientAuth(**client.model_dump())
-    db.add(db_client)
-    await db.commit()
-    await db.refresh(db_client)
-    return ClientMain.model_validate(db_client)
-
-# @router.get('/auth_basic')
-# def reg_basic(
-#     credentials = Annotated[HTTPBasicCredentials, ]
-# ):
-#     pass
+@router.post('/login', response_model=UserMain)
+async def user_login(user: UserLog, db: AsyncSession = Depends(get_db)):
+    return UserMain.model_validate(await crud.user_login(user, db))
 
