@@ -1,5 +1,3 @@
-import uuid
-
 import jwt
 import bcrypt
 

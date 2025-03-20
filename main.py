@@ -9,8 +9,8 @@ import logging
 
 from app.datadase.database import engine, Base
 # from app.api.users.views import router as crud_users
-from app.api.auth.views import router as auth
-from app.api.channels.views import router as crud_channels
+from app.api.auth.routers import router as auth
+from app.api.channels.routers import router as crud_channels
 
 
 logging.basicConfig(level=logging.INFO)
