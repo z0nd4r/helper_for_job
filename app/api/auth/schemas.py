@@ -1,5 +1,9 @@
 from pydantic import BaseModel, EmailStr, ConfigDict
-from typing import Optional
+
+class TokenInfo(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = 'Bearer'
 
 class UserReg(BaseModel):
     model_config = ConfigDict(strict = True)
@@ -7,7 +11,6 @@ class UserReg(BaseModel):
     username: str
     password: str
     email: EmailStr 
-    active: bool = True
 
 
 class UserLog(BaseModel):
@@ -20,8 +23,7 @@ class UserLog(BaseModel):
 class UserMain(BaseModel):
     id: int
     username: str
-    email: EmailStr 
-    active: bool = True
+    email: EmailStr
 
     class Config:
         from_attributes = True

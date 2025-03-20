@@ -1,17 +1,38 @@
-import jwt 
+import uuid
+
+import jwt
 import bcrypt
 
+from datetime import datetime, timedelta
+
 from .config import settings
+
 
 # шифруем токен
 def encode_jwt(
     payload: dict,
     private_key: str = settings.auth_jwt.private_key_path.read_text(),
     algorithm: str = settings.auth_jwt.algorithm,
+    expire_minutes: int = settings.auth_jwt.access_token_expire_minutes,
+    expire_timedelta: timedelta | None = None,
 ) -> str:
-    
+
+    to_encode = payload.copy()
+
+    now = datetime.utcnow()
+    if expire_timedelta:
+        expire = now + timedelta(days=expire_timedelta)
+    else:
+        expire = now + timedelta(minutes=expire_minutes)
+
+    to_encode.update(
+        iat = now,
+        exp = expire,
+
+    )
+
     encoded = jwt.encode(
-        payload,
+        to_encode,
         private_key,
         algorithm=algorithm,
     )
@@ -31,9 +52,9 @@ def decode_jwt(
     )
     return decoded
 
-# шифруем пароль
+# хэшируем пароль
 def hash_password(
-    password: str      
+    password: str
 ) -> bytes:
     salt = bcrypt.gensalt()
     pwd_bytes: bytes = password.encode()
