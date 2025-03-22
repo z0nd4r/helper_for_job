@@ -7,8 +7,8 @@ def create_access_token(user: UserMain) -> str:
     jwt_payload = {
         'iss': 'crm_system_by_zondar',
         'type': 'access',
-        'sub': user.id,
-        'username': user.username,
+        'sub': user.username,
+        'user_id': user.id,
         'email': user.email,
     }
 
@@ -21,7 +21,7 @@ def create_refresh_token(user: UserMain) -> str:
     jwt_payload = {
         'iss': 'crm_system_by_zondar',
         'type': 'refresh',
-        'sub': user.id,
+        'sub': user.username,
     }
 
     token = encode_jwt(

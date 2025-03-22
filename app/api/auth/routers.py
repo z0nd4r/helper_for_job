@@ -1,6 +1,11 @@
+import logging
+import sys
 from typing import Annotated, Union
 
-from fastapi import Depends, HTTPException, status, Form, APIRouter
+from fastapi import Depends, HTTPException, status, Form, APIRouter, Body
+from fastapi.security import HTTPBearer, OAuth2PasswordBearer, OAuth2PasswordRequestForm, HTTPAuthorizationCredentials
+
+from jwt.exceptions import InvalidTokenError
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
@@ -11,11 +16,25 @@ from app.datadase.dependencies import get_db
 
 from .schemas import UserReg, UserLog, UserMain, TokenInfo
 
-from app.api.auth.core.utils import hash_password, validate_password
+from app.api.auth.core.utils import hash_password, validate_password, decode_jwt
 
 from .core.tokens_create import create_access_token, create_refresh_token
 
+# настройка базовой конфигурации логирования
+logging.basicConfig(
+    level=logging.DEBUG,  # уровень логирования DEBUG
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+    handlers=[
+        logging.StreamHandler(sys.stdout)  # отправляем логи в консоль
+    ]
+)
 
+logger = logging.getLogger(__name__)
+
+# http_bearer = HTTPBearer()
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl='/auth/login',
+)
 router = APIRouter(prefix='/auth', tags = ['Auth'])
 
 
@@ -57,11 +76,15 @@ async def user_register(
 
 @router.post('/login', response_model=Union[UserMain, TokenInfo])
 async def user_login(
-        user: Annotated[UserLog, Form()],
+        # user: Annotated[UserLog, Form()],
+        user_data: OAuth2PasswordRequestForm = Depends(),
         db: AsyncSession = Depends(get_db)
 ):
+    logger.debug(f"Received user {user_data}")
+    logger.debug(f'Received user {user_data.username}, {user_data.password}')
+
     result = await db.execute(
-        select(UserRegTablename).where(user.email == UserRegTablename.email)
+        select(UserRegTablename).where(user_data.username == UserRegTablename.email)
     )
     db_user = result.scalars().first()
     if db_user is None:
@@ -70,7 +93,7 @@ async def user_login(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    password = user.password
+    password = user_data.password
     if not validate_password(password, db_user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -85,3 +108,33 @@ async def user_login(
         access_token = access_token,
         refresh_token = refresh_token,
     )
+
+@router.get('/users/me', response_model=UserMain, summary='Get user info')
+async def auth_user_check_self_info(
+    # credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
+    token: str = Depends(oauth2_scheme), # получаем токен напрямую
+    db: AsyncSession = Depends(get_db),
+) -> UserMain:
+    # получаем токен в виде строки
+    # token = credentials.credentials
+    print(token)
+    try:
+        # декодируем токен и получаем полезную нагрузку (в виде словаря)
+        payload = decode_jwt(
+            token=token,
+        )
+    except InvalidTokenError as e:
+        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='token invalid error'
+        )
+    print(payload)
+    result = await db.execute(select(UserRegTablename).where(UserRegTablename.email == payload.get('email')))
+    db_user = result.scalars().first()
+    if db_user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='user no found (token invalid)'
+        )
+    return UserMain.model_validate(db_user)

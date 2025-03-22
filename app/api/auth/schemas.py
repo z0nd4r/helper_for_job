@@ -14,9 +14,9 @@ class UserReg(BaseModel):
 
 
 class UserLog(BaseModel):
-    model_config = ConfigDict(strict = True)
+    # model_config = ConfigDict(strict = True)
 
-    email: EmailStr 
+    username: EmailStr
     password: str
 
 
