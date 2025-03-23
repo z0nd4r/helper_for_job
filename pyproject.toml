@@ -21,6 +21,7 @@ asyncpg = "^0.30.0"
 pydantic = {extras = ["email"], version = "^2.10.6"}
 pydantic-settings = "^2.8.1"
 fastapi-users-db-sqlalchemy = "^7.0.0"
+alembic = "^1.15.1"
 
 
 [build-system]

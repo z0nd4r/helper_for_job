@@ -31,11 +31,15 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-# http_bearer = HTTPBearer()
+http_bearer = HTTPBearer(auto_error=False)
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl='/auth/login',
 )
-router = APIRouter(prefix='/auth', tags = ['Auth'])
+router = APIRouter(
+    prefix='/auth',
+    tags = ['Auth'],
+    dependencies=[Depends(http_bearer)],
+)
 
 
 @router.post('/register', response_model=UserMain)
@@ -109,6 +113,41 @@ async def user_login(
         refresh_token = refresh_token,
     )
 
+@router.post('/refresh', response_model=TokenInfo, response_model_exclude_none=True)
+async def auth_refresh_jwt(
+    token: str = Depends(oauth2_scheme), # получаем токен напрямую
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        # декодируем токен и получаем полезную нагрузку (в виде словаря)
+        payload = decode_jwt(
+            token=token,
+        )
+        token_type = payload.get('type')
+        # проверяем тип токена
+        if token_type != 'refresh':
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"invalid token type {token_type!r} expected 'refresh'"
+            )
+    except InvalidTokenError as e:
+        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='token invalid error'
+        )
+
+    result = await db.execute(select(UserRegTablename).where(UserRegTablename.username == payload.get('sub')))
+    db_user = result.scalars().first()
+    print(payload)
+    print(db_user)
+
+    access_token = create_access_token(db_user)
+
+    return TokenInfo(
+        access_token=access_token,
+    )
+
 @router.get('/users/me', response_model=UserMain, summary='Get user info')
 async def auth_user_check_self_info(
     # credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
@@ -117,19 +156,25 @@ async def auth_user_check_self_info(
 ) -> UserMain:
     # получаем токен в виде строки
     # token = credentials.credentials
-    print(token)
+
     try:
         # декодируем токен и получаем полезную нагрузку (в виде словаря)
         payload = decode_jwt(
             token=token,
         )
+        token_type = payload.get('type')
+        # проверяем тип токена
+        if token_type != 'access':
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"invalid token type {token_type!r} expected 'access'"
+            )
     except InvalidTokenError as e:
         print(e)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='token invalid error'
         )
-    print(payload)
     result = await db.execute(select(UserRegTablename).where(UserRegTablename.email == payload.get('email')))
     db_user = result.scalars().first()
     if db_user is None:

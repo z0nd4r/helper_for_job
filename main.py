@@ -7,8 +7,8 @@ from contextlib import asynccontextmanager
 
 import logging
 
-from app.datadase.database import engine, Base
-# from app.api.users.views import router as crud_users
+from app.datadase.database import engine
+from app.datadase.models import Base
 from app.api.auth.routers import router as auth
 from app.api.channels.routers import router as crud_channels
 
