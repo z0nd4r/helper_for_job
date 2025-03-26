@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, Boolean, LargeBinary
-from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
+from sqlalchemy import Column, Integer, String, Boolean, LargeBinary, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
 
 
 class Base(DeclarativeBase):
@@ -14,11 +14,16 @@ class UserRegTablename(Base):
     email = Column(String, nullable=False, unique=True)
     active = Column(Boolean, nullable=False, default=True)
 
-class BlackListToken(Base):
-    __tablename__ = 'blacklist_tokens'
+    refresh_token = relationship('RefreshTokens', back_populates='user')
+
+class RefreshTokens(Base):
+    __tablename__ = 'refresh_tokens'
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    jti: Mapped[str] = mapped_column(nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id', ondelete='cascade'))
+    token: Mapped[str] = mapped_column(nullable=False, unique=True)
+
+    user: Mapped['UserRegTablename'] = relationship(back_populates='refresh_token')
 
 
 class Channel(Base):

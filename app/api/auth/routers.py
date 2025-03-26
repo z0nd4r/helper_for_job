@@ -2,8 +2,8 @@ import logging
 import sys
 from typing import Annotated, Union
 
-from fastapi import Depends, HTTPException, status, Form, APIRouter, Body
-from fastapi.security import HTTPBearer, OAuth2PasswordBearer, OAuth2PasswordRequestForm, HTTPAuthorizationCredentials
+from fastapi import Depends, HTTPException, status, Form, APIRouter, Cookie, Response
+from fastapi.security import HTTPBearer, OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from jwt.exceptions import InvalidTokenError
 
@@ -13,8 +13,9 @@ from sqlalchemy import select
 
 from app.datadase.models import UserRegTablename
 from app.datadase.dependencies import get_db
+from .core.cookie import add_access_with_refresh_tokens_to_cookie
 
-from .schemas import UserReg, UserLog, UserMain, TokenInfo
+from .schemas import UserReg, UserMain, TokenInfo
 
 from app.api.auth.core.utils import hash_password, validate_password, decode_jwt
 
@@ -37,12 +38,12 @@ oauth2_scheme = OAuth2PasswordBearer(
 )
 router = APIRouter(
     prefix='/auth',
-    tags = ['Auth'],
+    tags=['Auth'],
     dependencies=[Depends(http_bearer)],
 )
 
 
-@router.post('/register', response_model=UserMain)
+@router.post('/register', response_model=UserMain, summary='Регистрация пользователя')
 async def user_register(
         user: Annotated[UserReg, Form()],
         db: AsyncSession = Depends(get_db)
@@ -78,9 +79,13 @@ async def user_register(
             )
 
 
-@router.post('/login', response_model=Union[UserMain, TokenInfo])
+@router.post('/login',
+             # response_model=Union[UserMain, TokenInfo],
+             summary='Авторизация пользователя'
+             )
 async def user_login(
         # user: Annotated[UserLog, Form()],
+        response: Response,
         user_data: OAuth2PasswordRequestForm = Depends(),
         db: AsyncSession = Depends(get_db)
 ):
@@ -108,20 +113,29 @@ async def user_login(
     access_token = create_access_token(db_user)
     refresh_token = create_refresh_token(db_user)
 
-    return TokenInfo(
-        access_token = access_token,
-        refresh_token = refresh_token,
-    )
+    add_access_with_refresh_tokens_to_cookie(response, access_token, refresh_token)
 
-@router.post('/refresh', response_model=TokenInfo, response_model_exclude_none=True)
+    return {'message': 'Authorization successful'}
+    # return TokenInfo(
+    #     access_token=access_token,
+    #     refresh_token=refresh_token,
+    # )
+
+@router.post('/refresh',
+             # response_model=TokenInfo,
+             response_model_exclude_none=True,
+             summary='Выпуск нового access токена'
+             )
 async def auth_refresh_jwt(
-    token: str = Depends(oauth2_scheme), # получаем токен напрямую
+    # refresh_token: str = Depends(oauth2_scheme), # получаем токен напрямую
+    response: Response,
+    refresh_token: str = Cookie(None, alias='refresh_token'),
     db: AsyncSession = Depends(get_db),
 ):
     try:
         # декодируем токен и получаем полезную нагрузку (в виде словаря)
         payload = decode_jwt(
-            token=token,
+            token=refresh_token,
         )
         token_type = payload.get('type')
         # проверяем тип токена
@@ -144,14 +158,18 @@ async def auth_refresh_jwt(
 
     access_token = create_access_token(db_user)
 
-    return TokenInfo(
-        access_token=access_token,
-    )
+    add_access_with_refresh_tokens_to_cookie(response, access_token, refresh_token)
+
+    return {'message': 'ok'}
+    # return TokenInfo(
+    #     access_token=access_token,
+    # )
 
 @router.get('/users/me', response_model=UserMain, summary='Get user info')
 async def auth_user_check_self_info(
     # credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
-    token: str = Depends(oauth2_scheme), # получаем токен напрямую
+    # token: str = Depends(oauth2_scheme), # получаем токен напрямую
+    access_token: str = Cookie(None, alias='access_token'),
     db: AsyncSession = Depends(get_db),
 ) -> UserMain:
     # получаем токен в виде строки
@@ -160,7 +178,7 @@ async def auth_user_check_self_info(
     try:
         # декодируем токен и получаем полезную нагрузку (в виде словаря)
         payload = decode_jwt(
-            token=token,
+            token=access_token,
         )
         token_type = payload.get('type')
         # проверяем тип токена
