@@ -5,6 +5,7 @@ from fastapi import Depends, APIRouter
 from app.datadase.dependencies import get_db
 
 from fastapi import HTTPException
+from fastapi.templating import Jinja2Templates
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
@@ -15,6 +16,7 @@ from app.datadase.models import Channel
 from .schemas import ChannelCreate, ChannelUpdate, ChannelMain
 
 router = APIRouter(prefix="/channels", tags=["Channels"])
+tamplates = Jinja2Templates(directory="app/templates")
 
 @router.get("/", response_model=List[ChannelMain], summary='Список каналов')
 async def channels(

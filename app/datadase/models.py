@@ -32,3 +32,10 @@ class Channel(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=True)
+
+
+class Message(Base):
+    __tablename__ = 'messages'
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+

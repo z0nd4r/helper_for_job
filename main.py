@@ -7,6 +7,8 @@ from contextlib import asynccontextmanager
 
 import logging
 
+from starlette.staticfiles import StaticFiles
+
 from app.datadase.database import engine
 from app.datadase.models import Base
 from app.api.auth.routers import router as auth
@@ -47,21 +49,23 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.mount('/static', StaticFiles(directory='app/static'), name='static')
+
 # app.include_router(crud_users)
 app.include_router(auth)
 app.include_router(crud_channels)
 
 # Домены, с которых разрешены запросы
 origins = [
-    # "http://localhost:3000",  # Для локальной разработки React
-    "https://qsoops.github.io", # Домен фронтенда
+    "http://localhost:8080",  # Для локальной разработки React
+    "http://127.0.0.1:8080", # Домен фронтенда
     # "https://your-frontend-domain.com",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,  # Разрешить передачу куки 
+    allow_credentials=True,  # Разрешить передачу куки
     allow_methods=["*"],      # Разрешить все HTTP методы (GET, POST, PUT, DELETE, ...)
     allow_headers=["*"],      # Разрешить все заголовки
 )
