@@ -153,15 +153,36 @@ async def user_login(
     access_token = create_access_token(db_user)
     refresh_token = create_refresh_token(db_user)
 
-    dict_refresh_token = {
-        'user_id': db_user.id,
-        'token': refresh_token,
-    }
+    try:
+        # получаем старый рефреш токен из бд
+        result = await db.execute(select(RefreshTokens).where(RefreshTokens.user_id == db_user.id))
+        refresh_token_db = result.scalars().first()
 
-    db_refresh_token = RefreshTokens(**dict_refresh_token)
-    db.add(db_refresh_token)
-    await db.commit()
-    await db.refresh(db_refresh_token)
+        # если он есть, то меняем его на новый и добавляем в бд
+        if refresh_token_db:
+            refresh_token_db.token = refresh_token
+            db.add(refresh_token_db)
+            await db.commit()
+            await db.refresh(refresh_token_db)
+        else:
+            dict_refresh_token = {
+                'user_id': db_user.id,
+                'token': refresh_token,
+            }
+
+            refresh_token_db = RefreshTokens(**dict_refresh_token)
+            db.add(refresh_token_db)
+            await db.commit()
+            await db.refresh(refresh_token_db)
+
+    except Exception as e:
+        print(f"Ошибка: {e}")
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            # detail={"message": "Internal server error"}
+            detail={"message": "Ошибка сервера"}
+        )
 
     add_access_with_refresh_tokens_to_cookie(response, access_token, refresh_token)
 
@@ -217,18 +238,20 @@ async def auth_refresh_jwt(
         'token': refresh_token,
     }
 
-    # получаем строку из таблицы с токенами
+    # получаем строку со старым токеном из таблицы с токенами
     result = await db.execute(select(RefreshTokens).where(RefreshTokens.user_id == db_user.id))
-    user_in_table_refresh_token = result.scalars().first()
+    refresh_token_db = result.scalars().first()
 
     # меняем старый рефреш токен из бд на новый
     for key, value in dict_refresh_token.items():
-        setattr(user_in_table_refresh_token, key, value)
+        setattr(refresh_token_db, key, value)
 
     # добавляем новый токен в бд
-    db.add(user_in_table_refresh_token)
+    print('refresh', refresh_token_db)
+
+    db.add(refresh_token_db)
     await db.commit()
-    await db.refresh(user_in_table_refresh_token)
+    await db.refresh(refresh_token_db)
 
     # положить токены в куки
     add_access_with_refresh_tokens_to_cookie(response, access_token, refresh_token)
