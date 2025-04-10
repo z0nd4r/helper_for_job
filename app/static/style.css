@@ -1,0 +1,298 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/*#app {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    height: 100vh;*/
+/*}*/
+
+/*!* Header *!*/
+/*header {*/
+/*    background-color: #fff;*/
+/*    padding: 10px;*/
+/*    border-bottom: 1px solid #ccc;*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*}*/
+
+/*header .logo {*/
+/*    font-size: 1.5em;*/
+/*    font-weight: bold;*/
+/*}*/
+
+/*header .user-profile {*/
+/*    position: relative;*/
+/*    cursor: pointer;*/
+/*    padding: 5px 10px;*/
+/*    border: 1px solid #ddd;*/
+/*    border-radius: 5px;*/
+/*}*/
+
+/*header .user-profile:hover {*/
+/*    background-color: #eee;*/
+/*}*/
+
+/*header .user-profile .dropdown {*/
+/*    position: absolute;*/
+/*    top: 100%;*/
+/*    right: 0;*/
+/*    background-color: #fff;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 5px;*/
+/*    padding: 5px 0;*/
+/*    width: 150px;*/
+/*    display: none; !* Initially hidden *!*/
+/*    z-index: 1;*/
+/*}*/
+
+/*header .user-profile:focus-within .dropdown {*/
+/*    display: block; !* Show when user-profile is focused (clicked) *!*/
+/*}*/
+
+/*header .user-profile .dropdown a {*/
+/*    display: block;*/
+/*    padding: 5px 15px;*/
+/*    text-decoration: none;*/
+/*    color: #333;*/
+/*}*/
+
+/*header .user-profile .dropdown a:hover {*/
+/*    background-color: #eee;*/
+/*}*/
+
+/*!* Main Interface *!*/
+/*#main-view {*/
+/*    flex-grow: 1;*/
+/*    display: flex;*/
+/*    background-color: #f9f9f9;*/
+/*}*/
+
+/*#channel-list {*/
+/*    width: 200px;*/
+/*    background-color: #fff;*/
+/*    border-right: 1px solid #ccc;*/
+/*    padding: 10px;*/
+/*}*/
+
+/*#channel-list h2 {*/
+/*    margin-top: 0;*/
+/*}*/
+
+/*#channel-list ul {*/
+/*    list-style: none;*/
+/*    padding: 0;*/
+/*    margin: 0;*/
+/*}*/
+
+/*#channel-list li {*/
+/*    padding: 8px;*/
+/*    border-bottom: 1px solid #eee;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*#channel-list li:hover {*/
+/*    background-color: #eee;*/
+/*}*/
+
+/*#channel-list li.selected {*/
+/*    background-color: #ddd;*/
+/*}*/
+
+/*#chat-area {*/
+/*    flex-grow: 1;*/
+/*    padding: 20px;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*}*/
+
+/*#chat-area .chat-header {*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*    padding-bottom: 10px;*/
+/*    border-bottom: 1px solid #ccc;*/
+/*    margin-bottom: 10px;*/
+/*}*/
+
+/*#chat-area .chat-header button {*/
+/*    padding: 8px 12px;*/
+/*    background-color: #eee;*/
+/*    border: none;*/
+/*    border-radius: 5px;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*#chat-area .chat-header button:hover {*/
+/*    background-color: #ddd;*/
+/*}*/
+
+/*#chat-area #add-user-modal,*/
+/*#chat-area #view-users-modal{*/
+/*    display: none;*/
+/*    position: fixed;*/
+/*    top: 50%;*/
+/*    left: 50%;*/
+/*    transform: translate(-50%, -50%);*/
+/*    background-color: white;*/
+/*    padding: 20px;*/
+/*    border: 1px solid #ccc;*/
+/*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
+/*    z-index: 2;*/
+/*}*/
+
+/*#chat-area #add-user-modal.show,*/
+/*#chat-area #view-users-modal.show{*/
+/*    display: block;*/
+/*}*/
+
+/*!* Footer *!*/
+/*footer {*/
+/*    background-color: #fff;*/
+/*    padding: 10px;*/
+/*    text-align: center;*/
+/*    border-top: 1px solid #ccc;*/
+/*}*/
+
+
+/* Auth View */
+#title{
+    text-align: center;
+    margin-top: 15px;
+}
+
+#auth-view-container {
+    position: relative; /* элементы внутри были расположены относительно */
+    width: 400px;
+    height: 350px;
+    margin: auto auto;
+    perspective: 1000px; /*важно для 3D-эффекта*/
+}
+
+.auth-view {
+    max-width: 400px; /*максимальная ширина элемента*/
+    margin: 10px auto; /*отступы, первое значение - сверху, второе значение - отступы с боков*/
+    padding: 25px; /*внутренние отступы между элементами*/
+    background-color: #fff; /*цвет фона элемента*/
+    border: 1px solid #ccc; /*граница вокруг элемента: толщина, стиль границы, цвет*/
+    border-radius: 10px; /*радиус округления углов элемента*/
+
+    position: absolute; /* Накладываем формы друг на друга */
+    backface-visibility: hidden; /* Скрываем "заднюю сторону" */
+    transition: transform 0.6s; /* Анимация переворота */
+}
+
+/* Стили для формы логина */
+#auth-view-login {
+    /* Изначально видна */
+}
+
+/* Стили для формы регистрации */
+#auth-view-register {
+    transform: rotateY(180deg); /* Скрыта и перевернута */
+}
+
+/* Класс, применяемый при "перевороте" */
+.flipped #auth-view-login {
+    transform: rotateY(-180deg);
+}
+
+.flipped #auth-view-register {
+    transform: rotateY(0deg);
+}
+
+
+
+.auth-view h1 {
+    text-align: center;
+}
+/**/
+.auth-view input {
+    width: 100%; /*ширина поля для ввода, процент занятой длины от родительского элемента*/
+    padding: 4px; /*внутренние отступы между элементами, пространство между содерижимым и границами*/
+    margin-bottom: 20px; /*отступ от элементов снизу*/
+    border: 1px solid #ddd; /*граница вокруг элемента: толщина, стиль границы, цвет*/
+    border-radius: 5px; /*радиус округления углов элемента*/
+    box-sizing: border-box; /*???*/
+}
+/**/
+.auth-view button {
+    width: 100%; /*ширина элемента, процент занятой длины от родительского элемента*/
+    padding: 10px; /*внутренние отступы между элементами, пространство между содерижимым и границами*/
+    background-color: #4CAF50; /*цвет фона*/
+    color: white; /*цвет букв внутри кнопки*/
+    border: none; /*граница вокруг элемента: у кнопки не будет границы*/
+    border-radius: 5px; /*радиус округления углов элемента*/
+    cursor: pointer; /*определяет вид курсора мыши при наведении на элемент*/
+    transition: background-color 0.2s ease;
+}
+
+.auth-view button:active {
+    background-color: #3e8e41; /*более темный оттенок зеленого*/
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2); /*тень внутри кнопки*/
+}
+
+/* Анимация для .credits (падение и подъем) */
+@keyframes creditsFall {
+    from {
+        transform: translateY(0); /* Исходное положение */
+        opacity: 1;
+    }
+    to {
+        transform: translateY(50px); /* Сдвиг вниз */
+        opacity: 1;
+    }
+}
+
+@keyframes creditsRise {
+    from {
+        transform: translateY(50px);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Стили для .credits */
+.credits {
+    text-align: center;
+    /*margin-top: 100px;*/
+    font-size: 0.9rem;
+    line-height: 1.4;
+    letter-spacing: 1px;
+    position: absolute; /*  Position absolute для размещения внутри #auth-view-container */
+    bottom: -50px; /*  Размещаем внизу контейнера */
+    width: 100%;
+    animation-duration: 0.6s; /* Длительность анимации */
+    animation-fill-mode: forwards; /* Сохраняем конечное состояние анимации */
+}
+
+/* Классы для запуска анимации */
+.flipped .credits {
+    animation-name: creditsFall; /* Падение при перевороте */
+}
+
+#auth-view-container:not(.flipped) .credits {
+    animation-name: creditsRise; /* Подъем, если .credits is not .flipped */
+}
+
+.error-message {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    position: absolute;
+}
+
+/*!* General *!*/
+/*.hidden {*/
+/*    display: none;*/
+/*}*/
+

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <div id="title">
+        <h1>CRM System</h1>
+    </div>
+
+    <div id="app">
+
+        <div id="auth-view-container">  <!-- контейнер для переворота -->
+            <div id="auth-error" class="error-message"></div> <!--для ошибок-->
+
+            <div id="auth-view-login" class="auth-view"> <!-- форма логина -->
+                <h1>Login</h1>
+                <input type="email" placeholder="Email" id="login-email" required>
+                <input type="password" placeholder="Password" id="login-password" required>
+                <button id="login-button">Авторизация</button>
+                <p>Нет аккаунта? <a href="#" id="register-link">Создать</a></p>
+            </div>
+
+            <div id="auth-view-register" class="auth-view">  <!-- форма регистрации -->
+                <h1>Register</h1>
+                <input type="text" placeholder="Username" id="register-username" required>
+                <input type="email" placeholder="Email" id="register-email" required>
+                <input type="password" placeholder="Password" id="register-password" required>
+                <button id="register-button">Зарегистрироваться</button>
+                <p>Уже есть аккаунт? <a href="#" id="login-link">Войти</a></p>
+            </div>
+
+            <div class="credits">
+                <b>Backend:</b> zondar__ <br>
+                <b>Frontend:</b> zondar__ together with AI
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module" src="../static/script.js"></script>
+
+</body>
+</html>

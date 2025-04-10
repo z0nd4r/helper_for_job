@@ -2,7 +2,7 @@ import logging
 import sys
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, status, Form, APIRouter, Cookie, Response
+from fastapi import Depends, HTTPException, status, Form, APIRouter, Cookie, Response, Body
 from fastapi.security import HTTPBearer, OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
 
@@ -14,9 +14,9 @@ from sqlalchemy import select
 
 from app.datadase.models import UserRegTablename, RefreshTokens
 from app.datadase.dependencies import get_db
-from .core.cookie import add_access_with_refresh_tokens_to_cookie
+from .core.cookie import add_access_with_refresh_tokens_to_cookie, delete_cookie_helper
 
-from .schemas import UserReg, UserMain, TokenInfo
+from .schemas import UserReg, UserMain, TokenInfo, CookieName
 
 from app.api.auth.core.utils import hash_password, validate_password, decode_jwt
 
@@ -203,6 +203,7 @@ async def auth_refresh_jwt(
     refresh_token: str = Cookie(None, alias='refresh_token'),
     db: AsyncSession = Depends(get_db),
 ):
+    print(refresh_token, 'token')
     try:
         # декодируем токен и получаем полезную нагрузку (в виде словаря)
         payload = decode_jwt(
@@ -216,7 +217,7 @@ async def auth_refresh_jwt(
                 detail=f"invalid token type {token_type!r} expected 'refresh'"
             )
     except InvalidTokenError as e:
-        print(e)
+        print(e, 'here')
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='token invalid error'
@@ -298,3 +299,15 @@ async def auth_user_check_self_info(
             detail='user no found (token invalid)'
         )
     return UserMain.model_validate(db_user)
+
+@router.post('/delete_cookie',
+             response_model_exclude_none=True,
+             summary='Удаление cookie')
+def delete_cookie(
+        response: Response,
+        cookie_name: CookieName,
+):
+    print(f'Началось удаление токена, {cookie_name.cookie_name}')
+    delete_cookie_helper(response, cookie_name.cookie_name)
+    print(f'{cookie_name.cookie_name} удален')
+    return {"message": f"Cookie {cookie_name.cookie_name} удален"}

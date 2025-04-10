@@ -27,3 +27,6 @@ class UserMain(BaseModel):
 
     class Config:
         from_attributes = True
+
+class CookieName(BaseModel):
+    cookie_name: str

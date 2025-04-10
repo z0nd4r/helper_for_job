@@ -57,6 +57,8 @@ app.include_router(crud_channels)
 
 # Домены, с которых разрешены запросы
 origins = [
+    "http://localhost:3000",  # <--- Вероятно, это нужно!
+    "http://127.0.0.1:3000",  # <---  И это!
     "http://localhost:8080",  # Для локальной разработки React
     "http://127.0.0.1:8080", # Домен фронтенда
     # "https://your-frontend-domain.com",
