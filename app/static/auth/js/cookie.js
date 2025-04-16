@@ -27,13 +27,11 @@ export function getCookie(name) {
     const cookieName = name + "=";
     const decodedCookie = decodeURIComponent(document.cookie);
     const ca = decodedCookie.split(';');
-    for(let i = 0; i <ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') {
-            c = c.substring(1);
-        }
+
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i].trim(); // Удаляем пробелы в начале и конце
         if (c.indexOf(cookieName) === 0) {
-            return c.substring(cookieName.length, cookieName.length + c.substring(cookieName.length).indexOf(';')); // Изменено
+            return c.substring(cookieName.length, c.length); // Возвращаем все до конца строки
         }
     }
     return "";

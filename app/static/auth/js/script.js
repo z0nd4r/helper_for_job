@@ -3,6 +3,7 @@ import {deleteCookie, getCookie} from "./cookie.js";
 import {startTokenRefreshInterval, stopTokenRefreshInterval} from "./tokens.js";
 import {initializeAuthentication} from "./auth_helpers.js";
 
+// document.addEventListener('DOMContentLoaded', initializeAuthentication);
 
 document.addEventListener('DOMContentLoaded', () => {
     const authViewContainer = document.getElementById('auth-view-container');
@@ -14,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutButton = document.getElementById('logout-button');
 
     // Вызываем функцию initializeAuthentication() при загрузке страницы
-    // document.addEventListener('DOMContentLoaded', initializeAuthentication);
 
 
 
@@ -110,13 +110,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // }
     async function logout() {
         console.log("logout() start");
-        // stopTokenRefreshInterval();
+        stopTokenRefreshInterval();
         console.log("Вызываем deleteCookie для access_token...");
         await deleteCookie('access_token'); // Удаляем Access Token
         console.log("Вызываем deleteCookie для refresh_token...");
         await deleteCookie('refresh_token'); // Удаляем Refresh Token
         console.log("Перенаправление на auth.html...");
-        window.location.href = '../templates/auth.html';
+        window.location.href = '../../../app/templates/auth/auth.html';
         console.log("logout() end");
     }
 
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (refresh_token) {
             startTokenRefreshInterval();
         } else {
-            window.location.href = '../templates/auth.html';
+            window.location.href = '../../../app/templates/main_page/main_page.html';
             return;
         }
     }

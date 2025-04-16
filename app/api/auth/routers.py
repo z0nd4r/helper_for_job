@@ -16,7 +16,7 @@ from app.datadase.models import UserRegTablename, RefreshTokens
 from app.datadase.dependencies import get_db
 from .core.cookie import add_access_with_refresh_tokens_to_cookie, delete_cookie_helper
 
-from .schemas import UserReg, UserMain, TokenInfo, CookieName
+from .schemas import UserReg, UserMain, TokenInfo, CookieName, UserInfo
 
 from app.api.auth.core.utils import hash_password, validate_password, decode_jwt
 
@@ -192,16 +192,17 @@ async def user_login(
         refresh_token=refresh_token,
     )
 
+
 @router.post('/refresh',
              # response_model=TokenInfo,
              response_model_exclude_none=True,
              summary='Выпуск нового access токена'
              )
 async def auth_refresh_jwt(
-    # refresh_token: str = Depends(oauth2_scheme), # получаем токен напрямую
-    response: Response,
-    refresh_token: str = Cookie(None, alias='refresh_token'),
-    db: AsyncSession = Depends(get_db),
+        # refresh_token: str = Depends(oauth2_scheme), # получаем токен напрямую
+        response: Response,
+        refresh_token: str = Cookie(None, alias='refresh_token'),
+        db: AsyncSession = Depends(get_db),
 ):
     print(refresh_token, 'token')
     try:
@@ -235,7 +236,7 @@ async def auth_refresh_jwt(
 
     # для замены токена в бд
     dict_refresh_token = {
-        'user_id': db_user.id, # id для связи двух таблиц, юзеров и токенов
+        'user_id': db_user.id,  # id для связи двух таблиц, юзеров и токенов
         'token': refresh_token,
     }
 
@@ -262,14 +263,14 @@ async def auth_refresh_jwt(
     #     access_token=access_token,
     # )
 
-@router.get('/users/me', response_model=UserMain, summary='Get user info')
-async def auth_user_check_self_info(
-    # credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
-    # token: str = Depends(oauth2_scheme), # получаем токен напрямую
-    access_token: str = Cookie(None, alias='access_token'),
-    db: AsyncSession = Depends(get_db),
-) -> UserMain:
 
+@router.get('/users/me', response_model=UserInfo, summary='Get user info')
+async def auth_user_check_self_info(
+        # credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
+        # token: str = Depends(oauth2_scheme), # получаем токен напрямую
+        access_token: str = Cookie(None, alias='access_token'),
+        db: AsyncSession = Depends(get_db),
+) -> UserInfo:
     # получаем токен в виде строки
     # token = credentials.credentials
 
@@ -298,7 +299,11 @@ async def auth_user_check_self_info(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='user no found (token invalid)'
         )
-    return UserMain.model_validate(db_user)
+    return UserInfo(
+        username=db_user.username,
+        email=db_user.email
+    )
+
 
 @router.post('/delete_cookie',
              response_model_exclude_none=True,

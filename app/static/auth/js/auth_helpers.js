@@ -3,7 +3,7 @@ import {refreshToken} from "./tokens.js";
 
 // Функция, которая будет выполнена при загрузке страницы
 export async function initializeAuthentication() {
-    if (getCookie('refreshToken')) {
+    if (getCookie('refresh_token')) {
         console.log("Refresh token найден. Попытка обновления access token...");
         const refreshSuccessful = await refreshToken(); //  Обновляем access token
 
@@ -18,6 +18,6 @@ export async function initializeAuthentication() {
     } else {
         //  Если refresh token отсутствует, перенаправляем на страницу входа
         console.log("Refresh token не найден. Перенаправляем на страницу входа.");
-        window.location.href = '../templates/auth.html';
+        // window.location.href = '../templates/auth.html';
     }
 }

@@ -39,7 +39,7 @@ export async function login() {
 
         const logText = await response.json();
 
-        window.location.href = '../templates/main_page.html';
+        window.location.href = '../../../app/templates/main_page/main_page.html';
 
         console.log('Tokens:', logText);
         //  Токены установлены в куки бэкендом
@@ -65,24 +65,34 @@ export async function register() {
         throw new Error('Ошибка: некоторые из полей пусты')
     }
 
+
+
     try {
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("email", email)
+        formData.append("password", password);
+
         const response = await fetch(ENDPOINTS.register, {
             method: 'POST',
             credentials: 'include', // **Отправлять cookie**
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({username, email, password})
+            body: formData
+            // headers: {
+            //     'Content-Type': 'application/json'
+            // },
+            // body: JSON.stringify({username, email, password})
         });
 
         const data = await response.json();
+        console.log(data);
 
         if (!response.ok) {
+            console.log(response);
             throw new Error(data.detail.message || `Registration failed: ${response.status}`);
         }
 
         //console.log('Registration success');
-        window.location.href = '../templates/main_page.html';
+        window.location.href = '../../../app/templates/main_page/main_page.html';
     } catch (error) {
         console.error('Registration error:', error);
         registerError.textContent = error.message;

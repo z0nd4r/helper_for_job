@@ -30,3 +30,7 @@ class UserMain(BaseModel):
 
 class CookieName(BaseModel):
     cookie_name: str
+
+class UserInfo(BaseModel):
+    username: str
+    email: EmailStr

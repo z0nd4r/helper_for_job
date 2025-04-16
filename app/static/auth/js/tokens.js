@@ -3,12 +3,12 @@ import {ENDPOINTS} from "./config.js";
 
 // Функция для обновления access token с использованием refresh token
 export async function refreshToken() {
-    const refreshToken = getCookie('refreshToken');
+    const refreshToken = getCookie('refresh_token');
 
     if (!refreshToken) {
         console.warn("Refresh token отсутствует.");
         //  Перенаправляем на страницу входа, если нет refresh token
-        window.location.href = '../templates/auth.html';
+        // window.location.href = '../templates/auth.html';
         return false; //  Возвращаем false, чтобы указать, что обновление не удалось
     }
 
@@ -23,7 +23,7 @@ export async function refreshToken() {
         if (response.ok) {
             const data = await response.json();
             const newAccessToken = data.access_token;
-            setCookie('accessToken', newAccessToken, 30 * 60); // Сохраняем новый access token
+            // setCookie('accessToken', newAccessToken, 30 * 60); // Сохраняем новый access token
 
             console.log("Access token успешно обновлен.");
             return true; //  Возвращаем true, чтобы указать, что обновление прошло успешно
@@ -32,7 +32,7 @@ export async function refreshToken() {
             //  Удаляем токены и перенаправляем на страницу входа
             await deleteCookie('accessToken');
             await deleteCookie('refreshToken');
-            window.location.href = '../templates/auth.html';
+            // window.location.href = '../templates/auth.html';
             return false; //  Возвращаем false, чтобы указать, что обновление не удалось
         }
     } catch (error) {
@@ -61,7 +61,7 @@ export async function autoRefreshToken() {
             // Удаляем все токены и перенаправляем на страницу входа
             await deleteCookie('access_token'); // Удаляем Access Token
             await deleteCookie('refresh_token'); // Удаляем Refresh Token
-            window.location.href = '../templates/auth.html'; // Перенаправляем
+            window.location.href = '../../../templates/auth/auth.html'; // Перенаправляем
             return; // Прерываем выполнение, чтобы не повторять запросы
         }
 
@@ -73,7 +73,7 @@ export async function autoRefreshToken() {
         console.error('Token refresh error:', error);
         await deleteCookie('access_token');
         await deleteCookie('refresh_token');
-        window.location.href = '../templates/auth.html';
+        window.location.href = '../../../templates/auth/auth.html';
     }
 }
 

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../static/main_page/css/channels.css">
+    <link rel="stylesheet" href="../../static/main_page/css/chats.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Каналы</h2>
+                <button><i class="fas fa-plus"></i></button>
+            </div>
+            <ul class="channel-list">
+                <li><a href="#" data-channel="первый"><i class="fas fa-hashtag"></i>Первый</a></li>
+                <li><a href="#" data-channel="второй"><i class="fas fa-hashtag"></i>Второй</a></li>
+                <li><a href="#" data-channel="третий"><i class="fas fa-hashtag"></i>Третий</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="chat-placeholder" id="chatPlaceholder">
+                <p>Выберите канал для отображения чата.</p>
+            </div>
+            <div class="chat-container" id="chatContainer" style="display: none;">
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Здесь будут отображаться сообщения чата -->
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="messageInput" placeholder="Type your message...">
+                    <button id="sendButton"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="../../static/main_page/js/channels.js"></script>
+</body>
+</html>

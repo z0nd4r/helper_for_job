@@ -1,0 +1,48 @@
+.chat-container {
+    display: flex;
+    flex-direction: column; /* Сообщения и ввод в столбик */
+    height: 100%;
+}
+
+.chat-messages {
+    flex: 1; /* Занимает все доступное пространство */
+    overflow-y: auto; /* Добавляем прокрутку */
+    padding: 10px;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc; /* Разделитель */
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.chat-input button {
+    background-color: #4CAF50; /* Зеленый цвет */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-message {
+    margin-bottom: 5px;
+    padding: 8px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.chat-placeholder {
+    padding: 20px;
+    text-align: center;
+    font-style: italic;
+    color: #888;
+}

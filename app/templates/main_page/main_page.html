@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM</title>
+    <link rel="stylesheet" href="../../static/main_page/css/main_page.css">
+</head>
+<body>
+    <div class="inline-wrapper">
+        <div class="top-container">
+            <div class="logo">CRM System</div>
+            <div class="main_buttons">
+                <a href="channels.html">Каналы</a>
+                <a href="tasks.html">Задачи</a>
+                <a href="calendar.html">Календарь</a>
+                <a href="friends.html">Друзья</a>
+            </div>
+
+            <div class="profile-dropdown">
+                    <button class="profile-button">
+                        <i class="user"></i> Профиль
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="#" id="my-profile-button">Мой профиль</a>
+                        <a href="#" id="settings-button">Настройки</a>
+                        <a href="#" id="help-button">Помощь</a>
+                        <a href="#" id='logout-button'>Выйти</a>
+                    </div>
+            </div>
+        </div>
+
+        <div class="content">
+        </div>
+    </div>
+
+    <script type="module" src="../../static/auth/js/script.js"></script>
+    <script type="module" src="../../static/main_page/js/animation/profile.js"></script>
+    <script type="module" src="../../static/profile/js/my_profile.js"></script>
+    <script type="module" src="../../static/main_page/js/main_script.js"></script>
+
+</body>
+</html>
