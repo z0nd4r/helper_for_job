@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String, Boolean, LargeBinary, ForeignKey
+import enum
+
+from sqlalchemy import Column, Integer, String, Boolean, LargeBinary, ForeignKey, DateTime, func, Enum
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
 
 
@@ -32,6 +34,20 @@ class Channel(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=True)
+
+class FriendshipStatus(enum.Enum):
+    PENDING = 'pending'
+    ACCEPTED = 'accepted'
+    REJECTED = 'rejected'
+
+class Friend(Base):
+    __tablename__ = 'friends'
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id', ondelete='cascade'))
+    friend_id: Mapped[int] = mapped_column(ForeignKey('users.id', ondelete='cascade'))
+    status: Mapped[str] = mapped_column(Enum(FriendshipStatus), default=FriendshipStatus.PENDING)
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
 class Message(Base):
