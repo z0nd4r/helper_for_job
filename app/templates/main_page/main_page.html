@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRM</title>
     <link rel="stylesheet" href="../../static/main_page/css/main_page.css">
+    <link rel="stylesheet" href="../../static/profile/css/profile_button.css">
+
 </head>
 <body>
     <div class="inline-wrapper">
@@ -22,9 +24,13 @@
                         <i class="user"></i> Профиль
                     </button>
                     <div class="dropdown-content">
-                        <a href="#" id="my-profile-button">Мой профиль</a>
-                        <a href="#" id="settings-button">Настройки</a>
-                        <a href="#" id="help-button">Помощь</a>
+                        <a href="#" class="my-profile-button no-close">Мой профиль</a>
+                            <div class="dropdown-content-profile">
+                                <p>Имя:</p>
+                                <p>Почта:</p>
+                            </div>
+                        <a href="#" class="settings-button no-close">Настройки</a>
+                        <a href="#" class="help-button no-close">Помощь</a>
                         <a href="#" id='logout-button'>Выйти</a>
                     </div>
             </div>
@@ -36,7 +42,7 @@
 
     <script type="module" src="../../static/auth/js/script.js"></script>
     <script type="module" src="../../static/main_page/js/animation/profile.js"></script>
-    <script type="module" src="../../static/profile/js/my_profile.js"></script>
+    <script type="module" src="../../static/profile/js/animation/my_profile_a.js"></script>
     <script type="module" src="../../static/main_page/js/main_script.js"></script>
 
 </body>
