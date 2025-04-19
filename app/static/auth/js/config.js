@@ -9,5 +9,7 @@ export const ENDPOINTS = {
     channelMessages: (channelId) => `/channels/${channelId}/messages`,  // GET, POST
     refreshToken: `http://127.0.0.1:8000/auth/refresh`,
     delete_cookie: `http://127.0.0.1:8000/auth/delete_cookie`,
+
+    user_profile: 'http://127.0.0.1:8000/auth/users/me',
 };
 

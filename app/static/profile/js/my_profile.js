@@ -1,8 +1,17 @@
-const myProfileButton= document.getElementById('my-profile-button');
-const settingsButton = document.getElementById('settings-button');
-const helpButton = document.getElementById('help-button');
+import {ENDPOINTS} from "../../auth/js/config.js";
 
-profileButton.addEventListener('click', (event) => {
-    event.preventDefault();
+export async function userInfo() {
+    console.log('userInfo выполняется')
 
-});
+    const response = await fetch(ENDPOINTS.user_profile, {
+            method: 'GET',
+            credentials: 'include', // **Отправлять cookie**
+        });
+
+    const data = await response.json();
+    console.log(data);
+
+    document.getElementById('userName').textContent = data.username || "Не указано"; // Защита от null/undefined
+    document.getElementById('userEmail').textContent = data.email || "Не указано"; // Защита от null/undefined
+
+}

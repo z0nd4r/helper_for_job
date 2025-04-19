@@ -1,4 +1,5 @@
 import {ENDPOINTS} from './config.js';
+import {userInfo} from "../../profile/js/my_profile.js";
 // import {stopTokenRefreshInterval} from "./script";
 
 // Функция для обработки логина
@@ -40,6 +41,8 @@ export async function login() {
         const logText = await response.json();
 
         window.location.href = '../../../app/templates/main_page/main_page.html';
+
+
 
         console.log('Tokens:', logText);
         //  Токены установлены в куки бэкендом

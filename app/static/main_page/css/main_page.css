@@ -6,15 +6,6 @@ body {
     color: #333;
 }
 
-/*.top-container,*/
-/*.content {*/
-/*    margin: 0;*/
-/*    padding: 0;*/
-/*    !*border: 1px solid black; !*  Для визуализации *!*!*/
-/*    box-sizing: border-box; !*  Включаем padding и border в ширину *!*/
-/*    width: 100%; !*  Занимает всю ширину *!*/
-/*}*/
-
 .top-container {
     display: flex;
     justify-content: space-between; /* Распределяем место между элементами */
@@ -95,6 +86,7 @@ body {
     display: block;
 }
 
+/* фон при наведении */
 .dropdown-content a:hover {
     background-color: #ddd;
 }

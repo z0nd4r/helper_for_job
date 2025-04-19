@@ -2,6 +2,7 @@ import {login, register} from './auth.js'
 import {deleteCookie, getCookie} from "./cookie.js";
 import {startTokenRefreshInterval, stopTokenRefreshInterval} from "./tokens.js";
 import {initializeAuthentication} from "./auth_helpers.js";
+import {userInfo} from "../../profile/js/my_profile.js";
 
 // document.addEventListener('DOMContentLoaded', initializeAuthentication);
 

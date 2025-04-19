@@ -1,0 +1,21 @@
+.copy-notification {
+    position: fixed; /* Fixed positioning, stays at the top */
+    top: 20px; /* Adjust from the top */
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000; /* Ensure it's on top of other elements */
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease-in-out; /* Smooth fade in/out */
+}
+
+.copy-notification.show {
+    opacity: 1; /* Make it visible */
+}
+
+.copyable {
+    cursor: pointer; /*  Изменяем курсор на "руку" при наведении */
+}
