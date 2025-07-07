@@ -13,6 +13,7 @@ from app.datadase.database import engine
 from app.datadase.models import Base
 from app.api.auth.routers import router as auth
 from app.api.channels.routers import router as crud_channels
+from app.api.friends.routers import router as crud_friends
 
 
 logging.basicConfig(level=logging.INFO)
@@ -34,7 +35,7 @@ async def lifespan(app: FastAPI):
     logger.info("Starting up...")
     try:
         await create_tables()
-        logger.info("Database tables created (or already exist).")
+        logger.info("Database tables created")
         yield  # Приложение запущено и готово принимать запросы
     except Exception as e:
         logger.error(f"Startup failed: {e}")
@@ -54,11 +55,12 @@ app.mount('/static', StaticFiles(directory='app/static'), name='static')
 # app.include_router(crud_users)
 app.include_router(auth)
 app.include_router(crud_channels)
+app.include_router(crud_friends)
 
 # Домены, с которых разрешены запросы
 origins = [
-    "http://localhost:3000",  # <--- Вероятно, это нужно!
-    "http://127.0.0.1:3000",  # <---  И это!
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
     "http://localhost:8080",  # Для локальной разработки React
     "http://127.0.0.1:8080", # Домен фронтенда
     # "https://your-frontend-domain.com",

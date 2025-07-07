@@ -3,7 +3,10 @@ import uuid
 import jwt
 import bcrypt
 
+from fastapi import HTTPException, status
 from datetime import datetime, timedelta
+
+from jwt import InvalidTokenError
 
 from .config import settings
 
@@ -52,6 +55,28 @@ def decode_jwt(
         algorithms=[algorithm],
     )
     return decoded
+
+# проверка на правильность токена
+def access_token_validate(access_token):
+    try:
+        # декодируем токен и получаем полезную нагрузку (в виде словаря)
+        payload = decode_jwt(
+            token=access_token
+        )
+        token_type = payload.get('type')
+        # проверяем тип токена
+        if token_type != 'access':
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"invalid token type {token_type!r} expected 'access'"
+            )
+    except InvalidTokenError as e:
+        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='token invalid error'
+        )
+    return payload
 
 # хэшируем пароль
 def hash_password(
