@@ -1,0 +1,57 @@
+services:
+  backend:
+    build:
+      context: ./
+      dockerfile: Dockerfile_backend
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_NAME}
+      APP_CONFIG__DB__URL: postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}
+#        REDIS_HOST: ${REDIS_HOST}
+#        REDIS_PORT: ${REDIS_PORT}
+    ports:
+      - "8000:8000"
+    depends_on: # зависимость для запуска
+      pg:
+        condition: service_healthy
+#      redis:
+#        condition: service_healthy
+    develop:
+      watch:
+        - action: sync
+          path: ./
+          target: /app
+        - action: rebuild
+          path: ./poetry.lock
+
+#  frontend:
+#    build:
+#      context: ./
+#      dockerfile: Dockerfile_frontend
+#    ports:
+#      - "3000:80"
+#    depends_on:
+#        - backend
+
+  pg:
+    image: postgres:17.4
+    environment:
+      POSTGRES_DB: ${POSTGRES_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck: # проверка при запуске
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
+volumes: # для локального хранения данных postgresql и redis, на случай удаления контейнеров
+  pgdata:
