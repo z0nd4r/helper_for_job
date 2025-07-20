@@ -9,11 +9,10 @@ import logging
 
 from starlette.staticfiles import StaticFiles
 
-from app.datadase.database import engine
-from app.datadase.models import Base
-from app.api.auth.routers import router as auth
-from app.api.channels.routers import router as crud_channels
-from app.api.friends.routers import router as crud_friends
+from database import engine, Base
+from api.auth import router as auth
+from api.channels import router as crud_channels
+from api.friends import router as crud_friends
 
 
 logging.basicConfig(level=logging.INFO)
@@ -50,7 +49,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.mount('/static', StaticFiles(directory='app/static'), name='static')
+app.mount('/static', StaticFiles(directory='./static'), name='static')
 
 # app.include_router(crud_users)
 app.include_router(auth)
@@ -59,8 +58,8 @@ app.include_router(crud_friends)
 
 # Домены, с которых разрешены запросы
 origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
     "http://localhost:8080",  # Для локальной разработки React
     "http://127.0.0.1:8080", # Домен фронтенда
     # "https://your-frontend-domain.com",
@@ -76,4 +75,4 @@ app.add_middleware(
 
 
 if __name__ == '__main__':
-    uvicorn.run('main:app', reload=True)
+    uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)

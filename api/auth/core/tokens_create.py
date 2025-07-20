@@ -1,8 +1,9 @@
-from app.api.auth.schemas import UserMain
+from api.auth.schemas import UserMain
 
-from .utils import encode_jwt, decode_jwt
+from .utils import encode_jwt
 
 from .config import settings
+
 def create_access_token(user: UserMain) -> str:
     jwt_payload = {
         'iss': 'crm_system_by_zondar',

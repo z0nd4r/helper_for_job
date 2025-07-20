@@ -1,16 +1,14 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, Cookie, HTTPException, status
-from jwt import InvalidTokenError
+from fastapi import APIRouter, Depends, Cookie, HTTPException
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.templating import Jinja2Templates
 
-from app.api.auth.core.utils import decode_jwt, access_token_validate
-from app.api.friends.schemas import FriendMain, FriendSchema
-from app.datadase.dependencies import get_db
-from app.datadase.models import Friend, UserRegTablename
+from .schemas import FriendSchema
+from api.auth.core.utils import access_token_validate
+from database import get_db, Friend, UserRegTablename
 
 router = APIRouter(
     prefix="/friends",

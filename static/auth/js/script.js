@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Вызываем deleteCookie для refresh_token...");
         await deleteCookie('refresh_token'); // Удаляем Refresh Token
         console.log("Перенаправление на auth.html...");
-        window.location.href = '../../../app/templates/auth/auth.html';
+        window.location.href = '../../../templates/auth/auth.html';
         console.log("logout() end");
     }
 
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (refresh_token) {
             startTokenRefreshInterval();
         } else {
-            window.location.href = '../../../app/templates/main_page/main_page.html';
+            window.location.href = '../../../templates/main_page/main_page.html';
             return;
         }
     }

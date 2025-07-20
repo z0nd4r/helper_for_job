@@ -7,17 +7,17 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
-from app.datadase.models import Base
+from backend import Base
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_USER = "postgres.hvgqdnrhmkpmlgutfymx"
-DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
-DATABASE_HOST = "aws-0-eu-central-1.pooler.supabase.com"
-DATABASE_PORT = "5432"
-DATABASE_NAME = "postgres"
+DATABASE_USER = os.getenv("POSTGRES_USER")
+DATABASE_PASSWORD = os.getenv("POSTGRES_PASSWORD")
+DATABASE_HOST = os.getenv("POSTGRES_HOST")
+DATABASE_PORT = os.getenv("POSTGRES_PORT")
+DATABASE_NAME = os.getenv("POSTGRES_NAME")
 
 SQLALCHEMY_DATABASE_URL = f"postgresql+asyncpg://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"
 

@@ -40,7 +40,7 @@ export async function login() {
 
         const logText = await response.json();
 
-        window.location.href = '../../../app/templates/main_page/main_page.html';
+        window.location.href = '../../../templates/main_page/main_page.html';
 
 
 
@@ -95,7 +95,7 @@ export async function register() {
         }
 
         //console.log('Registration success');
-        window.location.href = '../../../app/templates/main_page/main_page.html';
+        window.location.href = '../../../templates/main_page/main_page.html';
     } catch (error) {
         console.error('Registration error:', error);
         registerError.textContent = error.message;
